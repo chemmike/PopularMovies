@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -30,6 +31,10 @@ public class MainActivityFragment extends Fragment
 {
     public static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     private MovieIconsAdapter iconsAdapter;
+
+    // Will contain the raw JSON response as a string.
+    String movieJsonStr = null;
+    int movieJsonStringLength;
 
     public MainActivityFragment() {
         // Required empty public constructor
@@ -48,6 +53,8 @@ public class MainActivityFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         iconsAdapter = new MovieIconsAdapter (getActivity(), Arrays.asList(currentMovieIcons));
@@ -79,17 +86,48 @@ public class MainActivityFragment extends Fragment
         return rootView;
     }
 
-    private void updateMovie()
+    private void UpdateMovie()
     {
         FetchMovieTask obtainMovieTask = new FetchMovieTask();
         obtainMovieTask.execute();
+    }
+
+    private void ManipulateMovieString()
+    {
+        Log.i(LOG_TAG, "MANIPULATE" + movieJsonStr);
+        int websiteFirstIndex = 0;
+        int websiteLastIndex = 0;
+        int websiteTracker = 1;
+        ArrayList<String> individualMovies = new ArrayList<String>();
+
+        while ((websiteTracker >= 0) && (movieJsonStr != null))
+        {
+            websiteFirstIndex = movieJsonStr.indexOf("\"poster_path\":\"", websiteTracker);
+            Log.i(LOG_TAG, "WEBSITE LOOP");
+            if (websiteFirstIndex < 0)
+            {
+                break;
+            }
+            websiteLastIndex = movieJsonStr.indexOf(".jpg", websiteTracker);
+            if (websiteFirstIndex >= 0) {
+                String sub = movieJsonStr.substring(websiteFirstIndex + 16, websiteLastIndex + 4);
+                Log.i(LOG_TAG, sub);
+                individualMovies.add(sub);
+                websiteTracker = websiteLastIndex + 5;
+            }
+            else
+            {
+                websiteTracker = -1;
+            }
+        }
     }
 
     @Override
     public void onStart()
     {
         super.onStart();
-        updateMovie();
+        UpdateMovie();
+        ManipulateMovieString();
     }
 
     public class FetchMovieTask extends AsyncTask<Void, Void, Void> {
@@ -102,18 +140,17 @@ public class MainActivityFragment extends Fragment
             Log.i(LOG_TAG, "I got to position 2");
 
             // These two need to be declared outside the try/catch
-// so that they can be closed in the finally block.
+            // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-// Will contain the raw JSON response as a string.
-            String forecastJsonStr = null;
+
 
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are available at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY KEY]");
+                URL url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[my key]");
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -125,7 +162,7 @@ public class MainActivityFragment extends Fragment
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
                     // Nothing to do.
-                    forecastJsonStr = null;
+                    movieJsonStr = null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -139,15 +176,16 @@ public class MainActivityFragment extends Fragment
 
                 if (buffer.length() == 0) {
                     // Stream was empty.  No point in parsing.
-                    forecastJsonStr = null;
+                    movieJsonStr = null;
                 }
-                forecastJsonStr = buffer.toString();
-                Log.i(LOG_TAG, forecastJsonStr);
+                movieJsonStr = buffer.toString();
+
+
             } catch (IOException e) {
                 Log.e("MainActivityFragment", "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attempting
                 // to parse it.
-                forecastJsonStr = null;
+                movieJsonStr = null;
 
             } finally {
                 if (urlConnection != null) {
@@ -162,6 +200,9 @@ public class MainActivityFragment extends Fragment
                 }
             }
             return null;
+        }
+        protected String onPostExecute (){
+            return movieJsonStr;
         }
     }
 }
