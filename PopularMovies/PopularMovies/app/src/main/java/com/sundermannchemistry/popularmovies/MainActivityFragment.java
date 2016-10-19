@@ -32,9 +32,8 @@ public class MainActivityFragment extends Fragment
     public static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     private MovieIconsAdapter iconsAdapter;
 
-    // Will contain the raw JSON response as a string.
-    String movieJsonStr = null;
-    int movieJsonStringLength;
+    ArrayList<String> individualMovies = new ArrayList<String>();
+
 
     public MainActivityFragment() {
         // Required empty public constructor
@@ -92,50 +91,24 @@ public class MainActivityFragment extends Fragment
         obtainMovieTask.execute();
     }
 
-    private void ManipulateMovieString()
-    {
-        Log.i(LOG_TAG, "MANIPULATE" + movieJsonStr);
-        int websiteFirstIndex = 0;
-        int websiteLastIndex = 0;
-        int websiteTracker = 1;
-        ArrayList<String> individualMovies = new ArrayList<String>();
 
-        while ((websiteTracker >= 0) && (movieJsonStr != null))
-        {
-            websiteFirstIndex = movieJsonStr.indexOf("\"poster_path\":\"", websiteTracker);
-            Log.i(LOG_TAG, "WEBSITE LOOP");
-            if (websiteFirstIndex < 0)
-            {
-                break;
-            }
-            websiteLastIndex = movieJsonStr.indexOf(".jpg", websiteTracker);
-            if (websiteFirstIndex >= 0) {
-                String sub = movieJsonStr.substring(websiteFirstIndex + 16, websiteLastIndex + 4);
-                Log.i(LOG_TAG, sub);
-                individualMovies.add(sub);
-                websiteTracker = websiteLastIndex + 5;
-            }
-            else
-            {
-                websiteTracker = -1;
-            }
-        }
-    }
 
     @Override
     public void onStart()
     {
         super.onStart();
         UpdateMovie();
-        ManipulateMovieString();
     }
 
-    public class FetchMovieTask extends AsyncTask<Void, Void, Void> {
+    public class FetchMovieTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
+        // Will contain the raw JSON response as a string.
+        String movieJsonStr = null;
+        int movieJsonStringLength;
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
 
             Log.i(LOG_TAG, "I got to position 2");
 
@@ -144,13 +117,11 @@ public class MainActivityFragment extends Fragment
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-
-
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are available at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[my key]");
+                URL url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY]");
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -201,8 +172,65 @@ public class MainActivityFragment extends Fragment
             }
             return null;
         }
-        protected String onPostExecute (){
-            return movieJsonStr;
+        protected void onPostExecute (Boolean runThePostCode){
+            Log.i(LOG_TAG, "ORIGINAL STRING = " + movieJsonStr);
+            int originalMovieStringLength = movieJsonStr.length();
+            int movieStringFirstIndex = 0;
+            int movieStringSecondIndex = 0;
+            int movieStringFirstJpgIndex = 0;
+            int movieStringSecondJpgIndex = 0;
+            int websiteTracker = 1;
+            boolean atLastMovieString;
+            
+            int originalStringLastMovieIndex = movieJsonStr.lastIndexOf("\"poster_path\":\"");
+            String originalLastIndexDisplayer = String.valueOf(originalStringLastMovieIndex);
+            Log.i(LOG_TAG, "originalStringLastMovieIndex = " + originalLastIndexDisplayer);
+
+            while ((websiteTracker >= 0) && (movieJsonStr != null))
+            {
+                String trackerDisplayer = String.valueOf(websiteTracker);
+                Log.i(LOG_TAG, "websiteTracker = " + trackerDisplayer);
+                movieStringFirstIndex = movieJsonStr.indexOf("\"poster_path\":\"", websiteTracker);
+                String firstIndexDisplayer = String.valueOf(movieStringFirstIndex);
+                Log.i(LOG_TAG, "movieStringFirstIndex = " + firstIndexDisplayer);
+                if (movieStringFirstIndex < 0)
+                {
+                    break;
+                }
+                movieStringFirstJpgIndex = movieJsonStr.indexOf(".jpg", websiteTracker);
+                String firstJpgIndexDisplayer = String.valueOf(movieStringFirstJpgIndex);
+                Log.i(LOG_TAG, "movieStringFirstJpgIndex = " + firstJpgIndexDisplayer);
+                
+                atLastMovieString = false;
+                if (movieStringFirstIndex == originalStringLastMovieIndex)
+                {
+                    atLastMovieString = true;
+                    Log.i(LOG_TAG, "THE LAST MOVIE NOW");
+                }
+
+                if (!atLastMovieString) {
+                    movieStringSecondIndex = movieJsonStr.indexOf("\"poster_path\":\"", movieStringFirstIndex + 16);
+                    movieStringSecondJpgIndex = movieJsonStr.indexOf(".jpg", movieStringFirstJpgIndex + 4);
+                    String secondIndexDisplayer = String.valueOf(movieStringSecondIndex);
+                    Log.i(LOG_TAG, "movieStringSecondIndex = " + secondIndexDisplayer);
+                    String secondJpgIndexDisplayer = String.valueOf(movieStringSecondJpgIndex);
+                    Log.i(LOG_TAG, "movieStringSecondJpgIndex = " + secondJpgIndexDisplayer);
+                }
+
+                String sub = movieJsonStr.substring(movieStringFirstIndex + 16, movieStringFirstJpgIndex + 4);
+                Log.i(LOG_TAG, sub);
+                individualMovies.add(sub);
+
+                if (atLastMovieString)
+                {
+                    break;
+                }
+                else
+                {
+                        websiteTracker = movieStringSecondJpgIndex + 5;
+                }
+            }
+
         }
     }
 }
