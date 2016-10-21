@@ -58,7 +58,7 @@ public class MainActivityFragment extends Fragment
         String trialA = new String ("http://image.tmdb.org/t/p/w185//z6BP8yLwck8mN9dtdYKkZ4XGa3D.jpg");
         trialForIndividualMovies.add(trialA);
         String trialB = new String ("http://image.tmdb.org/t/p/w185//5N20rQURev5CNDcMjHVUZhpoCNC.jpg");
-        trialForIndividualMovies.add(trialA);
+        trialForIndividualMovies.add(trialB);
 
 
         // Inflate the layout for this fragment

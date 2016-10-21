@@ -1,6 +1,7 @@
 package com.sundermannchemistry.popularmovies;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,17 @@ import java.util.ArrayList;
 public class MovieIconsAdapter extends ArrayAdapter {
 
     private static final String LOG_TAG = MovieIconsAdapter.class.getSimpleName();
+    private Context context;
+    private ArrayList<String> trialForIndividualMovies;
 
     // the context is used to inflate the layout file and the List is the data we want to populate into the lists
     public MovieIconsAdapter(Activity context, ArrayList<String> trialForIndividualMovies)
     {
         //initalize the ArrayAdapter's internal storage for the context and the list
         super(context, 0, trialForIndividualMovies);
+        // need to create a reference to context and Movies so that the GetView method can use them
+        this.context = context;
+        this.trialForIndividualMovies = trialForIndividualMovies;
     }
 
     // provide a view for the AdapterView (ListView or GridView)
