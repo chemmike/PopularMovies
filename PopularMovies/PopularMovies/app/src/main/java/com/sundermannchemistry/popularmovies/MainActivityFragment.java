@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 /**
@@ -34,6 +33,7 @@ public class MainActivityFragment extends Fragment
 
     ArrayList<String> individualMovies = new ArrayList<String>();
 
+    ArrayList<String> trialForIndividualMovies = new ArrayList<String>();
 
     public MainActivityFragment() {
         // Required empty public constructor
@@ -53,10 +53,17 @@ public class MainActivityFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // add dummy data
+
+        String trialA = new String ("http://image.tmdb.org/t/p/w185//z6BP8yLwck8mN9dtdYKkZ4XGa3D.jpg");
+        trialForIndividualMovies.add(trialA);
+        String trialB = new String ("http://image.tmdb.org/t/p/w185//5N20rQURev5CNDcMjHVUZhpoCNC.jpg");
+        trialForIndividualMovies.add(trialA);
+
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        iconsAdapter = new MovieIconsAdapter (getActivity(), Arrays.asList(currentMovieIcons));
+        iconsAdapter = new MovieIconsAdapter (getActivity(), trialForIndividualMovies);
 
         // get a reference to the GridView and attach this adapter to it
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_icons_grid);
@@ -181,6 +188,8 @@ public class MainActivityFragment extends Fragment
             int movieStringSecondJpgIndex = 0;
             int websiteTracker = 1;
             boolean atLastMovieString;
+
+            individualMovies.clear();
             
             int originalStringLastMovieIndex = movieJsonStr.lastIndexOf("\"poster_path\":\"");
             String originalLastIndexDisplayer = String.valueOf(originalStringLastMovieIndex);
