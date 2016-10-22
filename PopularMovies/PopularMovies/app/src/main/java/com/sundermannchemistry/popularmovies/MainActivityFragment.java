@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
@@ -30,6 +31,7 @@ public class MainActivityFragment extends Fragment
 {
     public static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     private MovieIconsAdapter iconsAdapter;
+    private MovieIconsAdapter newIconsAdapter;
 
     ArrayList<String> individualMovies = new ArrayList<String>();
 
@@ -63,7 +65,7 @@ public class MainActivityFragment extends Fragment
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        iconsAdapter = new MovieIconsAdapter (getActivity(), trialForIndividualMovies);
+        iconsAdapter = new MovieIconsAdapter (getActivity(), individualMovies);
 
         // get a reference to the GridView and attach this adapter to it
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_icons_grid);
@@ -239,6 +241,8 @@ public class MainActivityFragment extends Fragment
                         websiteTracker = movieStringSecondJpgIndex + 5;
                 }
             }
+            // reinitialize adapter
+            MovieIconsAdapter.updateData(individualMovies);
 
         }
     }

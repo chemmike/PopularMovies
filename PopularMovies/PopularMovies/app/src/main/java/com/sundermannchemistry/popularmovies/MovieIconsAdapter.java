@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -15,20 +15,39 @@ import java.util.ArrayList;
 /**
  * Created by chemm on 10/7/2016.
  */
-public class MovieIconsAdapter extends ArrayAdapter {
+public class MovieIconsAdapter extends BaseAdapter {
 
     private static final String LOG_TAG = MovieIconsAdapter.class.getSimpleName();
     private Context context;
-    private ArrayList<String> trialForIndividualMovies;
+    private ArrayList<String> individualMovies;
 
     // the context is used to inflate the layout file and the List is the data we want to populate into the lists
-    public MovieIconsAdapter(Activity context, ArrayList<String> trialForIndividualMovies)
+    public MovieIconsAdapter(Activity context, ArrayList<String> individualMovies)
     {
-        //initalize the ArrayAdapter's internal storage for the context and the list
-        super(context, 0, trialForIndividualMovies);
         // need to create a reference to context and Movies so that the GetView method can use them
         this.context = context;
-        this.trialForIndividualMovies = trialForIndividualMovies;
+        this.individualMovies = individualMovies;
+        notifyDataSetChanged();
+    }
+
+    public void updateData(ArrayList<String> individualMovies){
+        ArrayList<String> newData = individualMovies;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getCount() {
+        return individualMovies.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return individualMovies.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     // provide a view for the AdapterView (ListView or GridView)
@@ -39,12 +58,13 @@ public class MovieIconsAdapter extends ArrayAdapter {
         // if this is a new View object, inflate the layout
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.grid_icon_item, parent, false);
+            LayoutInflater layoutInflater = ((MainActivity)context).getLayoutInflater();
+            convertView = layoutInflater.inflate(R.layout.grid_icon_item, parent, false);
         }
         // modify the View widgets
 
         ImageView iconView = (ImageView) convertView.findViewById(R.id.grid_icon_image);
-        Picasso.with(context).load(trialForIndividualMovies.get(position)).into(iconView);
+        Picasso.with(context).load(individualMovies.get(position)).into(iconView);
         return convertView;
     }
 }
