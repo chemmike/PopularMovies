@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
@@ -242,7 +241,7 @@ public class MainActivityFragment extends Fragment
                 }
             }
             // reinitialize adapter
-            MovieIconsAdapter.updateData(individualMovies);
+            iconsAdapter.updateData(individualMovies);
 
         }
     }
