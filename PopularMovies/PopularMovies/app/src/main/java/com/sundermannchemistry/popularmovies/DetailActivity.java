@@ -11,6 +11,7 @@ public class DetailActivity extends ActionBarActivity {
 
     public static final String LOG_TAG = DetailActivity.class.getSimpleName();
     public static final String FIRST_MESSAGE = "firstMessage";
+    public static final String GRID_POSITION = "grid position";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +25,14 @@ public class DetailActivity extends ActionBarActivity {
 
             Intent intent = getIntent();
             String firstMessageText = intent.getStringExtra(FIRST_MESSAGE);
+            int chosenGrid = intent.getIntExtra(GRID_POSITION, 0);
             String secondMessageText = "Movie info";
             Log.i(LOG_TAG, "I got here " + firstMessageText);
 
             Bundle args = new Bundle();
             args.putString("myFragmentMessage", firstMessageText);
             args.putString("myNextFragmentMessage", secondMessageText);
+            args.putInt("theChosenMovie", chosenGrid);
             DetailFragment fragInfo = new DetailFragment();
             fragInfo.setArguments(args);
             getSupportFragmentManager()
