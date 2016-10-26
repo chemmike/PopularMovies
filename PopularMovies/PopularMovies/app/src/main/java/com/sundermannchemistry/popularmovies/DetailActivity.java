@@ -3,15 +3,19 @@ package com.sundermannchemistry.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class DetailActivity extends ActionBarActivity {
 
     public static final String LOG_TAG = DetailActivity.class.getSimpleName();
-    public static final String FIRST_MESSAGE = "firstMessage";
+    public static final String OVERVIEW_CHOSEN = "overview chosen";
+    public static final String RELEASE_DATE_CHOSEN = "release date chosen";
+    public static final String TITLE_CHOSEN = "title chosen";
+    public static final String VOTE_AVERAGE_CHOSEN = "vote average chosen";
+    public static final String ICON_CHOSEN = "icon chosen";
     public static final String GRID_POSITION = "grid position";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,17 +26,21 @@ public class DetailActivity extends ActionBarActivity {
 
          }
 
-
             Intent intent = getIntent();
-            String firstMessageText = intent.getStringExtra(FIRST_MESSAGE);
-            int chosenGrid = intent.getIntExtra(GRID_POSITION, 0);
-            String secondMessageText = "Movie info";
-            Log.i(LOG_TAG, "I got here " + firstMessageText);
+            String sendingOverview = intent.getStringExtra(OVERVIEW_CHOSEN);
+            String sendingReleaseDate = intent.getStringExtra(RELEASE_DATE_CHOSEN);
+            String sendingTitle = intent.getStringExtra(TITLE_CHOSEN);
+            String sendingVoteAverage = intent.getStringExtra(VOTE_AVERAGE_CHOSEN);
+            String sendingIcon = intent.getStringExtra(ICON_CHOSEN);
+            int sendingPosition = intent.getIntExtra(GRID_POSITION, 0);
 
             Bundle args = new Bundle();
-            args.putString("myFragmentMessage", firstMessageText);
-            args.putString("myNextFragmentMessage", secondMessageText);
-            args.putInt("theChosenMovie", chosenGrid);
+            args.putString("theOverview", sendingOverview);
+            args.putString("theReleaseDate", sendingReleaseDate);
+            args.putString("theTitle", sendingTitle);
+            args.putString("theVoteAverage", sendingVoteAverage);
+            args.putString("theIcon", sendingIcon);
+            args.putInt("theChosenMovie", sendingPosition);
             DetailFragment fragInfo = new DetailFragment();
             fragInfo.setArguments(args);
             getSupportFragmentManager()
@@ -58,6 +66,7 @@ public class DetailActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 

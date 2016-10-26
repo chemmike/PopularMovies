@@ -3,4 +3,12 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">Details</string>
     <string name="detail_movie_icon">The Movie Icon</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="pref_sort_by_label">Sort Movies By:</string>
+    <string name="pref_sort_by_label_popular">Popular</string>
+    <string name="pref_sort_by_label_top_rated">Top Rated</string>
+    <string name="pref_sort_by_key" translatable="false">sortBy</string>
+    <string name="pref_sort_by_popular" translatable="false">popular</string>
+    <string name="pref_sort_by_top_rated" translatable="false">topRated</string>
 </resources>

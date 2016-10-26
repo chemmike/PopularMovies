@@ -2,8 +2,10 @@ package com.sundermannchemistry.popularmovies;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,9 +81,17 @@ public class MainActivityFragment extends Fragment
             // Implementers can call getItemAtPosition(position) if they need to access the data associated with the selected item
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
             {
-                String firstMessageText = "The Movie";
+                String chosenOverview = movieOverview.get(position);
+                String chosenReleaseDate = movieReleaseDate.get(position);
+                String chosenTitle = movieTitle.get(position);
+                String chosenVoteAverage = movieVoteAverage.get(position);
+                String chosenMovieIcon = individualMovies.get(position);
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(DetailActivity.FIRST_MESSAGE, firstMessageText);
+                intent.putExtra(DetailActivity.OVERVIEW_CHOSEN, chosenOverview);
+                intent.putExtra(DetailActivity.RELEASE_DATE_CHOSEN, chosenReleaseDate);
+                intent.putExtra(DetailActivity.TITLE_CHOSEN, chosenTitle);
+                intent.putExtra(DetailActivity.VOTE_AVERAGE_CHOSEN, chosenVoteAverage);
+                intent.putExtra(DetailActivity.ICON_CHOSEN, chosenMovieIcon);
                 intent.putExtra(DetailActivity.GRID_POSITION, position);
                 String positionDisplayer = String.valueOf(position);
                 Log.i(LOG_TAG, "GridView Position = " + positionDisplayer);
@@ -126,10 +136,22 @@ public class MainActivityFragment extends Fragment
             BufferedReader reader = null;
 
             try {
+                // get preferences from settings menu
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String movieSorter = prefs.getString(getString(R.string.pref_sort_by_key),
+                        getString(R.string.pref_sort_by_popular));
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are available at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY]");
+                URL url;
+                if (movieSorter.equals(getString(R.string.pref_sort_by_popular)))
+                {
+                    url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY]");
+                }
+                else
+                {
+                    url = new URL("https://api.themoviedb.org/3/movie/top_rated?api_key=[MY_KEY]");
+                }
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();

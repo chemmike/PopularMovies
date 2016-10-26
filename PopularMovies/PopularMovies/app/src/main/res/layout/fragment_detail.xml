@@ -11,14 +11,52 @@
     tools:context="com.sundermannchemistry.popularmovies.DetailFragment">
 
     <TextView
+        android:id="@+id/titleOfMovie"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:background="#311b92"
+        android:text=""
+        android:textColor="@android:color/white"
+        android:textSize="36sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="232dp">
+
+        <ImageView
+            android:id="@+id/detailMovieIcon"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:contentDescription="@string/detail_movie_icon" />
+
+        <TextView
+            android:id="@+id/releaseDateOfMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/detailMovieIcon"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/voteAverageOfMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/releaseDateOfMovie"
+            android:layout_below="@id/releaseDateOfMovie"
+            android:textSize="18sp"
+            android:text="" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/overviewOfMovie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/firstMessage"
+        android:textSize="12sp"
         android:text="" />
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/detailMovieIcon"/>
 
 </LinearLayout>
