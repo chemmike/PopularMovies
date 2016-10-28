@@ -33,6 +33,7 @@ public class MainActivityFragment extends Fragment
     public static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     private MovieIconsAdapter iconsAdapter;
     private MovieIconsAdapter newIconsAdapter;
+    boolean canGetInformation;
 
     ArrayList<String> individualMovies = new ArrayList<String>();
     ArrayList<String> movieOverview = new ArrayList<String>();
@@ -103,62 +104,21 @@ public class MainActivityFragment extends Fragment
         return rootView;
     }
 
-    public static void isNetworkAvailable(final Handler handler, final int timeout) {
-        // ask fo message '0' (not connected) or '1' (connected) on 'handler'
-        // the answer must be send before before within the 'timeout' (in milliseconds)
-
-        new Thread() {
-            private boolean responded = false;
-            @Override
-            public void run() {
-                // set 'responded' to TRUE if is able to connect with google mobile (responds fast)
-                new Thread() {
-                    @Override
-                    public void run() {
-                        HttpGet requestForTest = new HttpGet("http://m.google.com");
-                        try {
-                            new DefaultHttpClient().execute(requestForTest); // can last...
-                            responded = true;
-                        }
-                        catch (Exception e) {
-                        }
-                    }
-                }.start();
-
-                try {
-                    int waited = 0;
-                    while(!responded && (waited < timeout)) {
-                        sleep(100);
-                        if(!responded ) {
-                            waited += 100;
-                        }
-                    }
-                }
-                catch(InterruptedException e) {} // do nothing
-                finally {
-                    if (!responded) { handler.sendEmptyMessage(0); }
-                    else { handler.sendEmptyMessage(1); }
-                }
-            }
-        }.start();
-    }
-
     private void UpdateMovie()
     {
-        isNetworkAvailable(h,2000); // get the answser within 2000 ms
-        Handler h = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
+        // get information from MovieIconsAdapter
+        Bundle sendNetworkInfo = getArguments();
+        Boolean networkIsOn = sendNetworkInfo.getBoolean("theNetworkInfo");
 
-                if (msg.what != 1) { // code if not connected
-
-                } else { FetchMovieTask obtainMovieTask = new FetchMovieTask();
-                         obtainMovieTask.execute();
-
-                }
-            }
-        };
-
+        if (networkIsOn)
+        {
+            FetchMovieTask obtainMovieTask = new FetchMovieTask();
+            obtainMovieTask.execute();
+        }
+        else
+        {
+            Log.i(LOG_TAG, "could not get a network connection");
+        }
     }
 
 
@@ -198,7 +158,7 @@ public class MainActivityFragment extends Fragment
                 URL url;
                 if (movieSorter.equals(getString(R.string.pref_sort_by_popular)))
                 {
-                    url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY");
+                    url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY]");
                 }
                 else
                 {

@@ -3,7 +3,6 @@ package com.sundermannchemistry.popularmovies;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +25,9 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Bundle args = getArguments();
 
+        // get information from MovieIconsAdapter
+        Bundle args = getArguments();
         String overviewInformation = args.getString("theOverview");
         String releaseDateInformation = args.getString("theReleaseDate");
         String titleInformation = args.getString("theTitle");
@@ -35,9 +35,7 @@ public class DetailFragment extends Fragment {
         String iconInformation = args.getString("theIcon");
         int moviePosition = args.getInt("theChosenMovie");
 
-        Log.i(LOG_TAG, "Position Info Made It! = " + moviePosition);
-        Log.i(LOG_TAG, "The Title is " + titleInformation);
-
+        // put information into layout
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         TextView movieTitleText = (TextView) rootView.findViewById(R.id.titleOfMovie);
