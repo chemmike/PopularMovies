@@ -33,7 +33,7 @@ public class MainActivityFragment extends Fragment
     public static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     private MovieIconsAdapter iconsAdapter;
     private MovieIconsAdapter newIconsAdapter;
-    boolean canGetInformation;
+    Boolean networkIsOn;
 
     ArrayList<String> individualMovies = new ArrayList<String>();
     ArrayList<String> movieOverview = new ArrayList<String>();
@@ -108,9 +108,19 @@ public class MainActivityFragment extends Fragment
     {
         // get information from MovieIconsAdapter
         Bundle sendNetworkInfo = getArguments();
-        Boolean networkIsOn = sendNetworkInfo.getBoolean("theNetworkInfo");
+        networkIsOn = sendNetworkInfo.getBoolean("theNetworkInfo");
+        boolean canRunMovieTask = networkIsOn.booleanValue();
 
-        if (networkIsOn)
+        if (canRunMovieTask)
+        {
+            Log.i(LOG_TAG, "MAIN ACTIVITY FRAGMENT true");
+        }
+        else
+        {
+            Log.i(LOG_TAG, "MAIN ACTIVITY FRAGMENT false");
+        }
+
+        if (canRunMovieTask)
         {
             FetchMovieTask obtainMovieTask = new FetchMovieTask();
             obtainMovieTask.execute();

@@ -6,11 +6,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String LOG_TAG = MainActivity.class.getSimpleName();
     boolean canGetInformation;
 
     private boolean isNetworkAvailable() {
@@ -26,6 +28,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         canGetInformation = isNetworkAvailable();
+
+        if (canGetInformation)
+        {
+            Log.i(LOG_TAG, "MAIN ACTIVITY true");
+        }
+        else
+        {
+            Log.i(LOG_TAG, "MAIN ACTIVITY false");
+        }
         Bundle sendNetworkInfo = new Bundle();
         sendNetworkInfo.putBoolean("theNetworkInfo", canGetInformation);
         MainActivityFragment netFragInfo = new MainActivityFragment();
