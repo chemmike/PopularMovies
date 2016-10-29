@@ -2,7 +2,6 @@ package com.sundermannchemistry.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ public class MovieIconsAdapter extends BaseAdapter {
 
     public void updateData(ArrayList<String> individualMovies){
         newData = individualMovies;
-        Log.i(LOG_TAG, newData.get(1));
         notifyDataSetChanged();
     }
 
@@ -64,7 +62,6 @@ public class MovieIconsAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.grid_icon_item, parent, false);
         }
         // modify the View widgets
-        Log.i(LOG_TAG, "Got into getView in GridView");
         ImageView iconView = (ImageView) convertView.findViewById(R.id.grid_icon_image);
         Picasso.with(context).load("http://image.tmdb.org/t/p/w185/" + newData.get(position)).into(iconView);
         return convertView;

@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -29,21 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
         canGetInformation = isNetworkAvailable();
 
-        if (canGetInformation)
-        {
-            Log.i(LOG_TAG, "MAIN ACTIVITY true");
-        }
-        else
-        {
-            Log.i(LOG_TAG, "MAIN ACTIVITY false");
-        }
         Bundle sendNetworkInfo = new Bundle();
         sendNetworkInfo.putBoolean("theNetworkInfo", canGetInformation);
         MainActivityFragment netFragInfo = new MainActivityFragment();
         netFragInfo.setArguments(sendNetworkInfo);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, netFragInfo)
+                .replace(R.id.nextContainer, netFragInfo)
                 .commit();
     }
 

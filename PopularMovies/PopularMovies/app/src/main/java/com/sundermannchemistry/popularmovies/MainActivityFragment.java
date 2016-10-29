@@ -47,16 +47,6 @@ public class MainActivityFragment extends Fragment
         // Required empty public constructor
     }
 
-    MovieIcons[] currentMovieIcons = {
-            new MovieIcons (R.drawable.cupcake_movie) ,
-            new MovieIcons (R.drawable.donut_movie) ,
-            new MovieIcons (R.drawable.eclair_movie) ,
-            new MovieIcons (R.drawable.froyo_movie) ,
-            new MovieIcons (R.drawable.gingerbread_movie) ,
-            new MovieIcons (R.drawable.honeycomb_movie) ,
-            };
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,8 +59,6 @@ public class MainActivityFragment extends Fragment
         // get a reference to the GridView and attach this adapter to it
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_icons_grid);
         gridView.setAdapter(iconsAdapter);
-
-        Log.i(LOG_TAG, "I got to position 1");
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -150,8 +138,6 @@ public class MainActivityFragment extends Fragment
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            Log.i(LOG_TAG, "I got to position 2");
-
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -168,7 +154,7 @@ public class MainActivityFragment extends Fragment
                 URL url;
                 if (movieSorter.equals(getString(R.string.pref_sort_by_popular)))
                 {
-                    url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY]");
+                    url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY");
                 }
                 else
                 {
@@ -246,24 +232,15 @@ public class MainActivityFragment extends Fragment
             movieVoteAverage.clear();
             
             int originalStringLastMovieIndex = movieJsonStr.lastIndexOf("\"poster_path\":\"");
-            String originalLastIndexDisplayer = String.valueOf(originalStringLastMovieIndex);
-            Log.i(LOG_TAG, "originalStringLastMovieIndex = " + originalLastIndexDisplayer);
 
             while ((websiteTracker >= 0) && (movieJsonStr != null))
             {
-                String trackerDisplayer = String.valueOf(websiteTracker);
-                Log.i(LOG_TAG, "websiteTracker = " + trackerDisplayer);
                 movieStringFirstIndex = movieJsonStr.indexOf("\"poster_path\":\"", websiteTracker);
-                String firstIndexDisplayer = String.valueOf(movieStringFirstIndex);
-                Log.i(LOG_TAG, "movieStringFirstIndex = " + firstIndexDisplayer);
                 if (movieStringFirstIndex < 0)
                 {
                     break;
                 }
                 movieStringFirstJpgIndex = movieJsonStr.indexOf(".jpg", websiteTracker);
-                String firstJpgIndexDisplayer = String.valueOf(movieStringFirstJpgIndex);
-                Log.i(LOG_TAG, "movieStringFirstJpgIndex = " + firstJpgIndexDisplayer);
-
                 movieStringFirstOverviewIndex = movieJsonStr.indexOf("\"overview\"", websiteTracker);
                 movieStringFirstReleaseDateIndex = movieJsonStr.indexOf("\"release_date\"", websiteTracker);
                 movieStringFirstTitleIndex = movieJsonStr.indexOf("\"original_title\"", websiteTracker);
@@ -271,36 +248,26 @@ public class MainActivityFragment extends Fragment
                 movieStringFirstVoteAverageIndex = movieJsonStr.indexOf("\"vote_average\"", websiteTracker);
 
                 String nextOverview = movieJsonStr.substring(movieStringFirstOverviewIndex + 12,movieStringFirstReleaseDateIndex - 2);
-                Log.i(LOG_TAG, nextOverview);
                 movieOverview.add(nextOverview);
                 String nextReleaseDate = movieJsonStr.substring(movieStringFirstReleaseDateIndex + 16, movieStringFirstReleaseDateIndex + 26);
-                Log.i(LOG_TAG, nextReleaseDate);
                 movieReleaseDate.add(nextReleaseDate);
                 String nextTitle = movieJsonStr.substring(movieStringFirstTitleIndex + 18, movieStringFirstLanguageIndex - 2);
-                Log.i(LOG_TAG, nextTitle);
                 movieTitle.add(nextTitle);
                 String nextVoteAverage = movieJsonStr.substring(movieStringFirstVoteAverageIndex + 15, movieStringFirstVoteAverageIndex + 19);
-                Log.i(LOG_TAG, nextVoteAverage);
                 movieVoteAverage.add(nextVoteAverage);
                 
                 atLastMovieString = false;
                 if (movieStringFirstIndex == originalStringLastMovieIndex)
                 {
                     atLastMovieString = true;
-                    Log.i(LOG_TAG, "THE LAST MOVIE NOW");
                 }
 
                 if (!atLastMovieString) {
                     movieStringSecondIndex = movieJsonStr.indexOf("\"poster_path\":\"", movieStringFirstIndex + 16);
                     movieStringSecondJpgIndex = movieJsonStr.indexOf(".jpg", movieStringFirstJpgIndex + 4);
-                    String secondIndexDisplayer = String.valueOf(movieStringSecondIndex);
-                    Log.i(LOG_TAG, "movieStringSecondIndex = " + secondIndexDisplayer);
-                    String secondJpgIndexDisplayer = String.valueOf(movieStringSecondJpgIndex);
-                    Log.i(LOG_TAG, "movieStringSecondJpgIndex = " + secondJpgIndexDisplayer);
                 }
 
                 String sub = movieJsonStr.substring(movieStringFirstIndex + 16, movieStringFirstJpgIndex + 4);
-                Log.i(LOG_TAG, sub);
                 individualMovies.add(sub);
 
                 if (atLastMovieString)
