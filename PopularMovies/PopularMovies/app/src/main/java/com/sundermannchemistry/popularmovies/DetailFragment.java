@@ -26,7 +26,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // get information from MovieIconsAdapter
+        // get information from DetailActivity
         Bundle args = getArguments();
         String overviewInformation = args.getString("theOverview");
         String releaseDateInformation = args.getString("theReleaseDate");

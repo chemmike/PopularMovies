@@ -34,6 +34,7 @@ public class MainActivityFragment extends Fragment
     private MovieIconsAdapter iconsAdapter;
     private MovieIconsAdapter newIconsAdapter;
     Boolean networkIsOn;
+    static boolean useLargeLayout;
 
     ArrayList<String> individualMovies = new ArrayList<String>();
     ArrayList<String> movieOverview = new ArrayList<String>();
@@ -75,21 +76,51 @@ public class MainActivityFragment extends Fragment
                 String chosenTitle = movieTitle.get(position);
                 String chosenVoteAverage = movieVoteAverage.get(position);
                 String chosenMovieIcon = individualMovies.get(position);
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(DetailActivity.OVERVIEW_CHOSEN, chosenOverview);
-                intent.putExtra(DetailActivity.RELEASE_DATE_CHOSEN, chosenReleaseDate);
-                intent.putExtra(DetailActivity.TITLE_CHOSEN, chosenTitle);
-                intent.putExtra(DetailActivity.VOTE_AVERAGE_CHOSEN, chosenVoteAverage);
-                intent.putExtra(DetailActivity.ICON_CHOSEN, chosenMovieIcon);
-                intent.putExtra(DetailActivity.GRID_POSITION, position);
-                String positionDisplayer = String.valueOf(position);
-                Log.i(LOG_TAG, "GridView Position = " + positionDisplayer);
-                startActivity(intent);
 
+                if (useLargeLayout) {
+                    Bundle args = new Bundle();
+                    args.putString("theOverview", chosenOverview);
+                    args.putString("theReleaseDate", chosenReleaseDate);
+                    args.putString("theTitle", chosenTitle);
+                    args.putString("theVoteAverage", chosenVoteAverage);
+                    args.putString("theIcon", chosenMovieIcon);
+                    args.putInt("theChosenMovie", position);
+                    DetailFragment fragInfo = new DetailFragment(); /// use detailfragmentcontainer, getActivity?
+                    fragInfo.setArguments(args);
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.container, fragInfo)
+                            .commit();
+                }
+                else {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra(DetailActivity.OVERVIEW_CHOSEN, chosenOverview);
+                    intent.putExtra(DetailActivity.RELEASE_DATE_CHOSEN, chosenReleaseDate);
+                    intent.putExtra(DetailActivity.TITLE_CHOSEN, chosenTitle);
+                    intent.putExtra(DetailActivity.VOTE_AVERAGE_CHOSEN, chosenVoteAverage);
+                    intent.putExtra(DetailActivity.ICON_CHOSEN, chosenMovieIcon);
+                    intent.putExtra(DetailActivity.GRID_POSITION, position);
+                    String positionDisplayer = String.valueOf(position);
+                    Log.i(LOG_TAG, "GridView Position = " + positionDisplayer);
+                    startActivity(intent);
+                }
             }
         });
 
         return rootView;
+    }
+
+    public static void setUseLargeLayout(boolean infoFromMainActivity)
+    {
+        useLargeLayout = infoFromMainActivity;
+        if (useLargeLayout)
+        {
+            Log.w(LOG_TAG, "USE LARGE LAYOUT true");
+        }
+        else
+        {
+            Log.w(LOG_TAG, "USE LARGE LAYOUT false");
+        }
     }
 
     private void UpdateMovie()
@@ -101,11 +132,11 @@ public class MainActivityFragment extends Fragment
 
         if (canRunMovieTask)
         {
-            Log.i(LOG_TAG, "MAIN ACTIVITY FRAGMENT true");
+            Log.w(LOG_TAG, "MAIN ACTIVITY FRAGMENT true");
         }
         else
         {
-            Log.i(LOG_TAG, "MAIN ACTIVITY FRAGMENT false");
+            Log.w(LOG_TAG, "MAIN ACTIVITY FRAGMENT false");
         }
 
         if (canRunMovieTask)
@@ -154,7 +185,7 @@ public class MainActivityFragment extends Fragment
                 URL url;
                 if (movieSorter.equals(getString(R.string.pref_sort_by_popular)))
                 {
-                    url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY");
+                    url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=[MY_KEY]");
                 }
                 else
                 {
@@ -247,14 +278,43 @@ public class MainActivityFragment extends Fragment
                 movieStringFirstLanguageIndex = movieJsonStr.indexOf("\"original_language\"", websiteTracker);
                 movieStringFirstVoteAverageIndex = movieJsonStr.indexOf("\"vote_average\"", websiteTracker);
 
+                movieJsonStringLength = movieJsonStr.length();
+                //String displayLength = String.valueOf(movieJsonStringLength);
+                //Log.i(LOG_TAG, "Overall length = " + displayLength);
+                //String displayTracker = String.valueOf(websiteTracker);
+                //Log.i(LOG_TAG, "website tracker = " + displayTracker);
+                //String displayFirstPoster = String.valueOf(movieStringFirstIndex);
+                //Log.i(LOG_TAG, "poster first index = " + displayFirstPoster);
+                //String displayFirstJpg = String.valueOf(movieStringFirstJpgIndex);
+                //Log.i(LOG_TAG, "jpg = " + displayFirstJpg);
+                //String displayFirstOverview = String.valueOf(movieStringFirstOverviewIndex);
+                //Log.i(LOG_TAG, "overview = " + displayFirstOverview);
+                //String displayFirstDate = String.valueOf(movieStringFirstReleaseDateIndex);
+                //Log.i(LOG_TAG, "release date = " + displayFirstDate);
+                //String displayFirstTitle = String.valueOf(movieStringFirstTitleIndex);
+                //Log.i(LOG_TAG, "title = " + displayFirstTitle);
+                //String displayFirstLang = String.valueOf(movieStringFirstLanguageIndex);
+                //Log.i(LOG_TAG, "language = " + displayFirstLang);
+                //String displayFirstVote = String.valueOf(movieStringFirstVoteAverageIndex);
+                //Log.i(LOG_TAG, "vote average = " + displayFirstVote);
+
                 String nextOverview = movieJsonStr.substring(movieStringFirstOverviewIndex + 12,movieStringFirstReleaseDateIndex - 2);
                 movieOverview.add(nextOverview);
                 String nextReleaseDate = movieJsonStr.substring(movieStringFirstReleaseDateIndex + 16, movieStringFirstReleaseDateIndex + 26);
                 movieReleaseDate.add(nextReleaseDate);
                 String nextTitle = movieJsonStr.substring(movieStringFirstTitleIndex + 18, movieStringFirstLanguageIndex - 2);
                 movieTitle.add(nextTitle);
-                String nextVoteAverage = movieJsonStr.substring(movieStringFirstVoteAverageIndex + 15, movieStringFirstVoteAverageIndex + 19);
+                String nextVoteAverage;
+                if (movieJsonStr.substring(movieStringFirstVoteAverageIndex + 16, movieStringFirstVoteAverageIndex + 17).equals(".")) {
+                    nextVoteAverage = movieJsonStr.substring(movieStringFirstVoteAverageIndex + 15, movieStringFirstVoteAverageIndex + 18);
+                }
+                else
+                {
+                    nextVoteAverage = movieJsonStr.substring(movieStringFirstVoteAverageIndex + 15, movieStringFirstVoteAverageIndex + 16) + ".0";
+                }
                 movieVoteAverage.add(nextVoteAverage);
+
+                Log.i(LOG_TAG, "Actual Title = " + nextTitle);
                 
                 atLastMovieString = false;
                 if (movieStringFirstIndex == originalStringLastMovieIndex)
@@ -264,11 +324,12 @@ public class MainActivityFragment extends Fragment
 
                 if (!atLastMovieString) {
                     movieStringSecondIndex = movieJsonStr.indexOf("\"poster_path\":\"", movieStringFirstIndex + 16);
-                    movieStringSecondJpgIndex = movieJsonStr.indexOf(".jpg", movieStringFirstJpgIndex + 4);
+                    movieStringSecondJpgIndex = movieJsonStr.indexOf("\"popularity\"", movieStringFirstJpgIndex + 4);
                 }
 
                 String sub = movieJsonStr.substring(movieStringFirstIndex + 16, movieStringFirstJpgIndex + 4);
                 individualMovies.add(sub);
+                Log.i(LOG_TAG, sub);
 
                 if (atLastMovieString)
                 {
