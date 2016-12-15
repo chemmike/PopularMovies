@@ -34,24 +34,26 @@ public class MainActivity extends AppCompatActivity {
         sendNetworkInfo.putBoolean("theNetworkInfo", canGetInformation);
         MainActivityFragment netFragInfo = new MainActivityFragment();
         netFragInfo.setArguments(sendNetworkInfo);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.large_container, netFragInfo)
+                .commit();
 
         // look for large screen
         View largeContainerFinder = findViewById(R.id.large_container);
         if (largeContainerFinder != null) {
             MainActivityFragment.setUseLargeLayout(true);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.large_container, netFragInfo)
-                    .commit();
-            Log.i(LOG_TAG, "LARGE SCREEN FOUND");
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new DetailFragment(), "DETAILFRAGMENTTAG")
+                        .commit();
+                Log.i(LOG_TAG, "LARGE SCREEN FOUND");
+            }
         }
         else
         {
             MainActivityFragment.setUseLargeLayout(false);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.next_container, netFragInfo)
-                    .commit();
+
             Log.i(LOG_TAG, "LARGE SCREEN NOT FOUND");
         }
     }

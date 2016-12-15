@@ -77,22 +77,7 @@ public class MainActivityFragment extends Fragment
                 String chosenVoteAverage = movieVoteAverage.get(position);
                 String chosenMovieIcon = individualMovies.get(position);
 
-                if (useLargeLayout) {
-                    Bundle args = new Bundle();
-                    args.putString("theOverview", chosenOverview);
-                    args.putString("theReleaseDate", chosenReleaseDate);
-                    args.putString("theTitle", chosenTitle);
-                    args.putString("theVoteAverage", chosenVoteAverage);
-                    args.putString("theIcon", chosenMovieIcon);
-                    args.putInt("theChosenMovie", position);
-                    DetailFragment fragInfo = new DetailFragment(); /// use detailfragmentcontainer, getActivity?
-                    fragInfo.setArguments(args);
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.container, fragInfo)
-                            .commit();
-                }
-                else {
+
                     Intent intent = new Intent(getActivity(), DetailActivity.class);
                     intent.putExtra(DetailActivity.OVERVIEW_CHOSEN, chosenOverview);
                     intent.putExtra(DetailActivity.RELEASE_DATE_CHOSEN, chosenReleaseDate);
@@ -103,7 +88,7 @@ public class MainActivityFragment extends Fragment
                     String positionDisplayer = String.valueOf(position);
                     Log.i(LOG_TAG, "GridView Position = " + positionDisplayer);
                     startActivity(intent);
-                }
+
             }
         });
 
